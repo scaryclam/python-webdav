@@ -1,0 +1,474 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Connection &mdash; python_webdav v0.5 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.5',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="python_webdav v0.5 documentation" href="index.html" />
+    <link rel="up" title="API" href="api.html" />
+    <link rel="next" title="Parse" href="Parse.html" />
+    <link rel="prev" title="Client" href="Client.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="Parse.html" title="Parse"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Client.html" title="Client"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">python_webdav v0.5 documentation</a> &raquo;</li>
+          <li><a href="api.html" accesskey="U">API</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-python_webdav.connection">
+<h1>Connection<a class="headerlink" href="#module-python_webdav.connection" title="Permalink to this headline">¶</a></h1>
+<p>Connection Module</p>
+<dl class="class">
+<dt id="python_webdav.connection.Client">
+<em class="property">
+class </em><tt class="descclassname">python_webdav.connection.</tt><tt class="descname">Client</tt><a class="headerlink" href="#python_webdav.connection.Client" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class is for interacting with webdav. Its main purpose is to be
+used by the client.py module but may also be used by developers
+who wish to use more direct webdav access.</p>
+<dl class="method">
+<dt id="python_webdav.connection.Client.copy_resource">
+<tt class="descname">copy_resource</tt><big>(</big><em>connection</em>, <em>resource_path</em>, <em>resource_destination</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Client.copy_resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy a resource from point a to point b on the server</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>connection</em> (Connection) &#8211; Connection object</li>
+<li><em>resource_path</em> (String) &#8211; Path to the required resource</li>
+<li><em>resource_destination</em> (String) &#8211; Destination of the copied resource</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.connection.Client.delete_resource">
+<tt class="descname">delete_resource</tt><big>(</big><em>connection</em>, <em>resource_uri</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Client.delete_resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete resource</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>connection</em> &#8211; Connection object</li>
+<li><em>resource_uri</em> (String) &#8211; URI of the resource</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.connection.Client.get_file">
+<tt class="descname">get_file</tt><big>(</big><em>connection</em>, <em>resource_uri</em>, <em>local_file_name</em>, <em>extra_headers={}</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Client.get_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>connection</em> (Connection) &#8211; Connection object</li>
+<li><em>resource_uri</em> (String) &#8211; the path of the resource / collection minus the host section</li>
+<li><em>local_file_name</em> (String) &#8211; Local file where the resource will be saved</li>
+<li><em>extra_headers</em> (Dict) &#8211; Add any extra headers for the request here</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.connection.Client.get_lock">
+<tt class="descname">get_lock</tt><big>(</big><em>resource_uri</em>, <em>connection</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Client.get_lock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a file lock</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>resource_uri</em> (String) &#8211; the path of the resource / collection minus the host section</li>
+<li><em>connection</em> (Connection) &#8211; Connection object</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.connection.Client.get_properties">
+<tt class="descname">get_properties</tt><big>(</big><em>connection</em>, <em>resource_uri</em>, <em>properties=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#python_webdav.connection.Client.get_properties" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of property objects</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>connection</em> (Connection) &#8211; Connection Object</li>
+<li><em>resource_uri</em> (String) &#8211; the path of the resource / collection minus the host section</li>
+<li><em>properties</em> (List) &#8211; list of property names to get. If left empty, will get all</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Returns a list of resource objects.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.connection.Client.get_property">
+<tt class="descname">get_property</tt><big>(</big><em>connection</em>, <em>resource_uri</em>, <em>property_name</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Client.get_property" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a property object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>connection</em> (Connection) &#8211; Connection object</li>
+<li><em>resource_uri</em> (String) &#8211; the path of the resource / collection minus the host section</li>
+<li><em>property_name</em> (String) &#8211; Property name</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Returns the property value as a string</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.connection.Client.release_lock">
+<tt class="descname">release_lock</tt><big>(</big><em>resource_uri</em>, <em>connection</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Client.release_lock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Release a file lock</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>resource_uri</em> (String) &#8211; the path of the resource / collection minus the host section</li>
+<li><em>connection</em> &#8211; Connection object</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.connection.Client.send_file">
+<tt class="descname">send_file</tt><big>(</big><em>connection</em>, <em>resource_uri</em>, <em>local_file_path</em>, <em>extra_headers={}</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Client.send_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>connection</em> (Connection) &#8211; Connection object</li>
+<li><em>resource_uri</em> (String) &#8211; the path of the resource / collection minus the host section</li>
+<li><em>local_file_path</em> (String) &#8211; the path of the local file</li>
+<li><em>extra_headers</em> (Dict) &#8211; Additional headers may be added here</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="python_webdav.connection.Connection">
+<em class="property">
+class </em><tt class="descclassname">python_webdav.connection.</tt><tt class="descname">Connection</tt><big>(</big><em>settings</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connection object</p>
+<dl class="method">
+<dt id="python_webdav.connection.Connection.send_copy">
+<tt class="descname">send_copy</tt><big>(</big><em>path</em>, <em>destination</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Connection.send_copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a COPY request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>path</em> (String) &#8211; Path (without host) to the source resource to copy</li>
+<li><em>destination</em> (String) &#8211; Path (without host) to the destination of the copied resource</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.connection.Connection.send_delete">
+<tt class="descname">send_delete</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Connection.send_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a DELETE request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>path</em> (String) &#8211; The path (without host) to the resource to delete</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.connection.Connection.send_get">
+<tt class="descname">send_get</tt><big>(</big><em>path</em>, <em>headers={}</em>, <em>callback=False</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Connection.send_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a GET request
+NOTE: callback is not yet implimented. It&#8217;s purpose is to allow
+the user to specify a callback so that when x percent of the file
+has been retrieved, the callback will be executed. This makes
+allowances for users who may require a progress to be kept track of.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>path</em> (String) &#8211; The path (without host) to the resource to get</li>
+<li><em>headers</em> (Dict) &#8211; Additional headers for the request should be added here</li>
+<li><em>callback</em> (Method or Function) &#8211; Not yet implimented. This will allow a callback to be added to the method. This is for such uses as keeping track ofupload progress.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.connection.Connection.send_lock">
+<tt class="descname">send_lock</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Connection.send_lock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a LOCK request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>path</em> (String) &#8211; Path (without host) to the resource to lock</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.connection.Connection.send_mkcol">
+<tt class="descname">send_mkcol</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Connection.send_mkcol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a MKCOL request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>path</em> (String) &#8211; Path (without host) to the desired place of the new collection</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.connection.Connection.send_propfind">
+<tt class="descname">send_propfind</tt><big>(</big><em>path</em>, <em>body=''</em>, <em>extra_headers={}</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Connection.send_propfind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a PROPFIND request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>path</em> (String) &#8211; Path (without host) to the resource from which the properties are required</li>
+<li><em>body</em> (String) &#8211; The body of the request</li>
+<li><em>extra_headers</em> (Dict) &#8211; Additional headers for the request may be added here</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.connection.Connection.send_put">
+<tt class="descname">send_put</tt><big>(</big><em>path</em>, <em>body</em>, <em>headers={}</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Connection.send_put" title="Permalink to this definition">¶</a></dt>
+<dd><p>This PUT request will put data files onto a webdav server.
+However, please note that due to the way in which httplib2 sends
+files, it is not currently possible to break a file up into chunks
+and read it in. In other words, the whole file has to be read into
+memory for sending. This could be problematic for large files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>path</em> (String) &#8211; The path (without host) to the desired file destination</li>
+<li><em>body</em> (String) &#8211; Body of the request. This is the data which to send to the destination file</li>
+<li><em>headers</em> (Dict) &#8211; Additional headers for the request may be added here</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.connection.Connection.send_rmcol">
+<tt class="descname">send_rmcol</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Connection.send_rmcol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send an RMCOL request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>path</em> (String) &#8211; Path (without host) to the collection to remove</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.connection.Connection.send_unlock">
+<tt class="descname">send_unlock</tt><big>(</big><em>path</em>, <em>lock_token</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Connection.send_unlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send an UNLOCK request</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>path</em> (String) &#8211; Path (without host) to the resource to unlock</li>
+<li><em>lock_token</em> (LockToken) &#8211; LockToken object retrived while locking the resource</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="python_webdav.connection.LockToken">
+<em class="property">
+class </em><tt class="descclassname">python_webdav.connection.</tt><tt class="descname">LockToken</tt><big>(</big><em>lock_token</em><big>)</big><a class="headerlink" href="#python_webdav.connection.LockToken" title="Permalink to this definition">¶</a></dt>
+<dd>LockToken object. This is an object that contains information about a
+lock on a resource or collection</dd></dl>
+
+<dl class="class">
+<dt id="python_webdav.connection.Property">
+<em class="property">
+class </em><tt class="descclassname">python_webdav.connection.</tt><tt class="descname">Property</tt><a class="headerlink" href="#python_webdav.connection.Property" title="Permalink to this definition">¶</a></dt>
+<dd><p>Property object for storing information about WebDAV properties</p>
+<dl class="method">
+<dt id="python_webdav.connection.Property.set_property">
+<tt class="descname">set_property</tt><big>(</big><em>property_name</em>, <em>property_value=None</em><big>)</big><a class="headerlink" href="#python_webdav.connection.Property.set_property" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set property names</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>property_name</em> (String) &#8211; Name of the property</li>
+<li><em>property_value</em> (String) &#8211; Value of the named property</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="Client.html"
+                                  title="previous chapter">Client</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="Parse.html"
+                                  title="next chapter">Parse</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/Connection.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Parse.html" title="Parse"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Client.html" title="Client"
+             >previous</a> |</li>
+        <li><a href="index.html">python_webdav v0.5 documentation</a> &raquo;</li>
+          <li><a href="api.html" >API</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010, Becky Lewis.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.2.
+    </div>
+  </body>
+</html>

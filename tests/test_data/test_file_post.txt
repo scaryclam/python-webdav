@@ -1,0 +1,1 @@
+This file should get posted to the server if the test passed properly

@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Client &mdash; python_webdav v0.5 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.5',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="python_webdav v0.5 documentation" href="index.html" />
+    <link rel="up" title="API" href="api.html" />
+    <link rel="next" title="Connection" href="Connection.html" />
+    <link rel="prev" title="API" href="api.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="Connection.html" title="Connection"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="API"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">python_webdav v0.5 documentation</a> &raquo;</li>
+          <li><a href="api.html" accesskey="U">API</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-python_webdav.client">
+<h1>Client<a class="headerlink" href="#module-python_webdav.client" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This module is still under heavy development!</p>
+</div>
+<div class="section" id="client-module">
+<h2>Client Module<a class="headerlink" href="#client-module" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="python_webdav.client.Client">
+<em class="property">
+class </em><tt class="descclassname">python_webdav.client.</tt><tt class="descname">Client</tt><big>(</big><em>webdav_server_uri</em>, <em>webdav_path='.'</em>, <em>port=80</em>, <em>realm=''</em><big>)</big><a class="headerlink" href="#python_webdav.client.Client" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is used for accessing a WebDAV service using similar commands
+that might be found in a CLI</p>
+<dl class="method">
+<dt id="python_webdav.client.Client.chdir">
+<tt class="descname">chdir</tt><big>(</big><em>directory</em><big>)</big><a class="headerlink" href="#python_webdav.client.Client.chdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change directory from whatever current dir is to directory specified</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>directory</em> (String) &#8211; Directory to change to</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.client.Client.download_file">
+<tt class="descname">download_file</tt><big>(</big><em>file_path</em>, <em>dest_path='.'</em><big>)</big><a class="headerlink" href="#python_webdav.client.Client.download_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download a file from file_path to dest_path</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>file_path</em> (String) &#8211; Path to the resource to download</li>
+<li><em>dest_path</em> (String) &#8211; Path to where the downloaded file should be saved</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.client.Client.ls">
+<tt class="descname">ls</tt><big>(</big><em>path=''</em>, <em>list_format=('F'</em>, <em>'C'</em>, <em>'M')</em>, <em>separator='t'</em>, <em>display=True</em><big>)</big><a class="headerlink" href="#python_webdav.client.Client.ls" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>path</em> (String) &#8211; Path of the directory to list</li>
+<li><em>list_format</em> &#8211; This is the format for the directory listing</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>The format symbols are:</dt>
+<dd><ul class="first last simple">
+<li>T - Type (resourcetype)</li>
+<li>D - Date Time (creationdate)</li>
+<li>F - Filename (href)</li>
+<li>M - Last modified time (getlastmodified)</li>
+<li>A - Attributes (executable)</li>
+<li>E - ETag (getetag)</li>
+<li>C - Content type (getcontenttype)</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>separator</em> (String) &#8211; Separator to use for formatting output</li>
+<li><em>display</em> (Boolean) &#8211; Whether or not to print the output</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.client.Client.mkdir">
+<tt class="descname">mkdir</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#python_webdav.client.Client.mkdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a directory (collection). If path does not start with &#8216;/&#8217;
+it is assumed to be relative to the current working directory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>path</em> (String) &#8211; Path of the directory to create</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.client.Client.pwd">
+<tt class="descname">pwd</tt><big>(</big><big>)</big><a class="headerlink" href="#python_webdav.client.Client.pwd" title="Permalink to this definition">¶</a></dt>
+<dd>Return the working directory</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.client.Client.rmdir">
+<tt class="descname">rmdir</tt><big>(</big><em>dir_path</em><big>)</big><a class="headerlink" href="#python_webdav.client.Client.rmdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a directory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>dir_path</em> (String) &#8211; This should be either a relative path or an
+absolute path to the collection to remove</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.client.Client.set_connection">
+<tt class="descname">set_connection</tt><big>(</big><em>username=''</em>, <em>password=''</em><big>)</big><a class="headerlink" href="#python_webdav.client.Client.set_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up the connection object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>username</em> (String) &#8211; Username if authentication is required for the connection</li>
+<li><em>password</em> (String) &#8211; Password if authentication is required for the connection</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="python_webdav.client.Client.upload_file">
+<tt class="descname">upload_file</tt><big>(</big><em>file_to_send</em>, <em>path=None</em><big>)</big><a class="headerlink" href="#python_webdav.client.Client.upload_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload a file to the server</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>file_to_send</em> (file or String) &#8211; File to be sent.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">Client</a><ul>
+<li><a class="reference external" href="#client-module">Client Module</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="api.html"
+                                  title="previous chapter">API</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="Connection.html"
+                                  title="next chapter">Connection</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/Client.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Connection.html" title="Connection"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="API"
+             >previous</a> |</li>
+        <li><a href="index.html">python_webdav v0.5 documentation</a> &raquo;</li>
+          <li><a href="api.html" >API</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010, Becky Lewis.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.2.
+    </div>
+  </body>
+</html>
