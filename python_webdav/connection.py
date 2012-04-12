@@ -1,6 +1,7 @@
 """ Connection Module
 """
 import httplib2
+import requests
 import python_webdav.parse
 import python_webdav.file_wrapper as file_wrapper
 
@@ -25,8 +26,9 @@ class Connection(object):
         self.locks = {}
 
         # Make an http object for this connection
-        self.httpcon = httplib2.Http()
-        self.httpcon.add_credentials(self.username, self.password)
+        #self.httpcon = httplib2.Http()
+        #self.httpcon.add_credentials(self.username, self.password)
+        self.httpcon = requests.session(auth=(self.username, self.password))
 
     def _send_request(self, request_method, path, body='', headers=None,
                       callback=None):
@@ -51,10 +53,11 @@ class Connection(object):
             headers = {}
         uri = httplib2.urlparse.urljoin(self.host, path)
         try:
-            resp, content = self.httpcon.request(uri, request_method,
-                                                 body=body, headers=headers)
+            resp = self.httpcon.request(request_method, uri,
+                                                 data=body, headers=headers)
         except httplib2.ServerNotFoundError:
             raise
+        content = resp.content
         return resp, content
 
     def send_delete(self, path):

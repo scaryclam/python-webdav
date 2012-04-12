@@ -31,13 +31,13 @@ class TestConnection(unittest.TestCase):
     def test_send_request(self):
         self.connection_obj.host = 'http://localhost/webdav'
         resp, content = self.connection_obj._send_request('GET', '')
-        self.assertEquals(resp.status, 200)
+        self.assertEquals(resp.status_code, 200)
 
     def test_send_get(self):
         self.connection_obj.host = 'http://localhost/webdav'
         path = ''
         resp, content = self.connection_obj.send_get(path)
-        self.assertEquals(resp.status, 200)
+        self.assertEquals(resp.status_code, 200)
 
     def test_send_get_raises_error(self):
         path = 'cake'
@@ -50,7 +50,7 @@ class TestConnection(unittest.TestCase):
         file_to_send = open('test_data/test_file_post.txt', 'r')
         body = file_to_send.read()
         resp, content = self.connection_obj.send_put(path, body=body)
-        self.assertTrue(resp.status in [201, 204])
+        self.assertTrue(resp.status_code in [201, 204])
 
     def test_send_put_raises(self):
         self.connection_obj.host = 'http://imnothere-haghashkddshkahdskhds.com'
@@ -63,13 +63,13 @@ class TestConnection(unittest.TestCase):
         self.connection_obj.host = 'http://localhost/webdav'
         path = '/webdav/test_file_post.txt'
         resp, content = self.connection_obj.send_delete(path)
-        self.assertTrue(resp.status in [204])
+        self.assertTrue(resp.status_code in [204])
 
     def test_send_delete_not_there(self):
         self.connection_obj.host = 'http://localhost/webdav'
         path = '/webdav/imnothere'
         resp, content = self.connection_obj.send_delete(path)
-        self.assertEquals(resp.status, 404)
+        self.assertEquals(resp.status_code, 404)
 
     def test_send_delete_raises(self):
         self.connection_obj.host = 'http://imnothere-ahsadhashadshds.com'
@@ -86,7 +86,7 @@ class TestConnection(unittest.TestCase):
         expected_content = '<?xml version="1.0" encoding="utf-8"?>\n<D:multistatus xmlns:D="DAV:">'
         content_sample = '\n'.join(content.split('\n')[:2])
 
-        self.assertEquals(expected_resp_status, resp.status)
+        self.assertEquals(expected_resp_status, resp.status_code)
         self.assertEquals(expected_content, content_sample)
 
     def test_send_propget_file(self):
@@ -98,7 +98,7 @@ class TestConnection(unittest.TestCase):
         expected_content = '<?xml version="1.0" encoding="utf-8"?>\n<D:multistatus xmlns:D="DAV:">'
         content_sample = '\n'.join(content.split('\n')[:2])
 
-        self.assertEquals(expected_resp_status, resp.status)
+        self.assertEquals(expected_resp_status, resp.status_code)
         self.assertEquals(expected_content, content_sample)
 
     def test_send_propget_path(self):
@@ -110,7 +110,7 @@ class TestConnection(unittest.TestCase):
         expected_content = '<?xml version="1.0" encoding="utf-8"?>\n<D:multistatus xmlns:D="DAV:">'
         content_sample = '\n'.join(content.split('\n')[:2])
 
-        self.assertEquals(expected_resp_status, resp.status)
+        self.assertEquals(expected_resp_status, resp.status_code)
         self.assertEquals(expected_content, content_sample)
 
     def test_send_propget_raises_error(self):
@@ -126,7 +126,7 @@ class TestConnection(unittest.TestCase):
         lock_fd = open('tst_lock.txt', 'w')
         lock_fd.write(lock.token)
         lock_fd.close()
-        self.assertEquals(200, resp.status)
+        self.assertEquals(200, resp.status_code)
         self.assertTrue(lock.token)
 
     def test_send_unlock(self):
@@ -138,19 +138,19 @@ class TestConnection(unittest.TestCase):
         os.remove('tst_lock.txt')
         lock_token = python_webdav.connection.LockToken(token)
         resp, content = self.connection_obj.send_unlock(path, lock_token)
-        self.assertEquals(204, resp.status)
+        self.assertEquals(204, resp.status_code)
 
     def test_send_mkcol(self):
         self.connection_obj.host = 'http://localhost/webdav/'
         path = 'wibble/'
         resp, content = self.connection_obj.send_mkcol(path)
-        self.assertEquals(201, resp.status)
+        self.assertEquals(201, resp.status_code)
 
     def test_send_rmcol(self):
         self.connection_obj.host = 'http://localhost/webdav/'
         path = 'wibble/'
         resp, content = self.connection_obj.send_rmcol(path)
-        self.assertEquals(204, resp.status)
+        self.assertEquals(204, resp.status_code)
 
     def test_send_copy_same_dir(self):
         self.connection_obj.host = 'http://localhost/webdav'
@@ -158,7 +158,7 @@ class TestConnection(unittest.TestCase):
         destination = 'webdav/temp_file_copy.txt'
         resp, content = self.connection_obj.send_copy(path, destination)
         self.connection_obj.send_delete(destination)
-        self.assertEquals(201, resp.status)
+        self.assertEquals(201, resp.status_code)
 
 
 class TestProperty(unittest.TestCase):
@@ -354,7 +354,7 @@ class TestClient(unittest.TestCase):
 
         connection_obj.send_get = mock.Mock()
         mock_resp = MockProperty()
-        mock_resp.status = 204
+        mock_resp.status_code = 204
         connection_obj.send_get.return_value = (mock_resp, 'Data')
         client = python_webdav.connection.Client()
         requested_value = client.get_file(connection_obj,
@@ -378,7 +378,7 @@ class TestClient(unittest.TestCase):
         connection_obj = python_webdav.connection.Connection(settings)
         connection_obj.send_put = mock.Mock()
         mock_resp = MockProperty()
-        mock_resp.status = 204
+        mock_resp.status_code = 204
         connection_obj.send_put.return_value = (mock_resp, '')
         client = python_webdav.connection.Client()
         local_file = os.path.join(os.path.abspath(os.path.dirname(__file__)),
@@ -386,7 +386,7 @@ class TestClient(unittest.TestCase):
         resp, contents = client.send_file(connection_obj,
                                           'webdav/test_file_post.txt',
                                           local_file)
-        self.assertEquals(resp.status, 204)
+        self.assertEquals(resp.status_code, 204)
 
     def test_copy_resource(self):
         settings = settings = dict(username='wibble',
@@ -398,14 +398,14 @@ class TestClient(unittest.TestCase):
         connection_obj = python_webdav.connection.Connection(settings)
         connection_obj.send_copy = mock.Mock()
         mock_resp = MockProperty()
-        mock_resp.status = 204
+        mock_resp.status_code = 204
         connection_obj.send_copy.return_value = (mock_resp, '')
         client = python_webdav.connection.Client()
         resource_uri = 'webdav/test_file1.txt'
         resource_destination = 'webdav/test_file1_copy.txt'
         resp, contents = client.copy_resource(connection_obj, resource_uri,
                                               resource_destination)
-        self.assertTrue(resp.status > 200)
+        self.assertTrue(resp.status_code > 200)
 
     def test_delete_resource(self):
         settings = settings = dict(username='wibble',
@@ -417,12 +417,12 @@ class TestClient(unittest.TestCase):
         connection_obj = python_webdav.connection.Connection(settings)
         connection_obj.send_delete = mock.Mock()
         mock_resp = MockProperty()
-        mock_resp.status = 204
+        mock_resp.status_code = 204
         connection_obj.send_delete.return_value = (mock_resp, '')
         client = python_webdav.connection.Client()
         resource_uri = 'webdav/test_file1_copy.txt'
         resp, contents = client.delete_resource(connection_obj, resource_uri)
-        self.assertTrue(resp.status > 200)
+        self.assertTrue(resp.status_code > 200)
 
     def test_lock(self):
         settings = settings = dict(username='wibble',
