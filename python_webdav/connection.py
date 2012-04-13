@@ -54,8 +54,8 @@ class Connection(object):
         uri = httplib2.urlparse.urljoin(self.host, path)
         try:
             resp = self.httpcon.request(request_method, uri,
-                                                 data=body, headers=headers)
-        except httplib2.ServerNotFoundError:
+                                        data=body, headers=headers)
+        except requests.ConnectionError:
             raise
         content = resp.content
         return resp, content
@@ -70,7 +70,7 @@ class Connection(object):
         try:
             resp, content = self._send_request('DELETE', path)
             return resp, content
-        except httplib2.ServerNotFoundError:
+        except requests.ConnectionError:
             raise
 
     def send_get(self, path, headers=None, callback=False):
@@ -99,7 +99,7 @@ class Connection(object):
             resp, content = self._send_request('GET', path, headers=headers,
                                                callback=callback)
             return resp, content
-        except httplib2.ServerNotFoundError:
+        except requests.ConnectionError:
             raise
 
     def send_put(self, path, body, headers=None):
@@ -127,7 +127,7 @@ class Connection(object):
             resp, content = self._send_request('PUT', path, body=body,
                                                headers=headers)
             return resp, content
-        except httplib2.ServerNotFoundError:
+        except requests.ConnectionError:
             raise
 
     def send_propfind(self, path, body='', extra_headers=None):
@@ -153,7 +153,7 @@ class Connection(object):
             resp, content = self._send_request('PROPFIND', path, body=body,
                                                headers=headers)
             return resp, content
-        except httplib2.ServerNotFoundError:
+        except requests.ConnectionError:
             raise
 
     def send_lock(self, path):
@@ -173,7 +173,7 @@ class Connection(object):
             resp, content = self._send_request('LOCK', path, body=body)
             lock_token = LockToken(resp['lock-token'])
             return resp, content, lock_token
-        except httplib2.ServerNotFoundError:
+        except requests.ConnectionError:
             raise
 
     def send_unlock(self, path, lock_token):
@@ -198,7 +198,7 @@ class Connection(object):
             resp, content = self._send_request('UNLOCK', path, headers=headers,
                                                body=body)
             return resp, content
-        except httplib2.ServerNotFoundError:
+        except requests.ConnectionError:
             raise
 
     def send_mkcol(self, path):
@@ -212,7 +212,7 @@ class Connection(object):
         try:
             resp, content = self._send_request('MKCOL', path)
             return resp, content
-        except httplib2.ServerNotFoundError, err:
+        except requests.ConnectionError, err:
             print "Oops, server not found!", err
             raise
 
@@ -226,7 +226,7 @@ class Connection(object):
         try:
             resp, content = self._send_request('DELETE', path)
             return resp, content
-        except httplib2.ServerNotFoundError:
+        except requests.ConnectionError:
             raise
 
     def send_copy(self, path, destination):
@@ -245,7 +245,7 @@ class Connection(object):
             headers = {'Destination': full_destination}
             resp, content = self._send_request('COPY', path, headers=headers)
             return resp, content
-        except httplib2.ServerNotFoundError:
+        except requests.ConnectionError:
             raise
 
 class LockToken(object):
@@ -321,7 +321,7 @@ class Client(object):
             resource_uri += '/'
 
         resp, prop_xml = connection.send_propfind(resource_uri, body=body)
-        if resp.status >= 200 and resp.status < 300:
+        if resp.status_code >= 200 and resp.status_code < 300:
             #parser = python_webdav.parse.Parser()
             parser = python_webdav.parse.LxmlParser()
             parser.parse(prop_xml)
