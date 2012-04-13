@@ -11,16 +11,48 @@ import httplib2
 import socket
 import mock
 import requests
+import shutil
+import subprocess
+import time
 import python_webdav.connection
 
 # Some WebDAV server settings.
-LOCAL_DAV_DIR = "/tmp/webdav/"
+LOCAL_DAV_DIR = "/tmp/"
+DAV_ROOT_DIR = "webdav"
 PORT = 8080
+SERVER_CMD = "~/code/virtual/python-webdav/bin/davserver -D %s -n -P %d" % (LOCAL_DAV_DIR, PORT)
 
-DIR_STRUCTURE = {'webdav': {'test_file1.txt': ['Test file']}}
+DIR_STRUCTURE = {DAV_ROOT_DIR: {'test_file1.txt': 'Test file',
+                                'test_dir1': {}}}
+
+
+def _create_files(dir_structure, dir_name=None):
+    if not dir_name:
+        dir_name = LOCAL_DAV_DIR
+    if not os.path.exists(dir_name):
+        os.mkdir(dir_name)
+    for key, val in dir_structure.iteritems():
+        next_item = os.path.join(dir_name, key)
+        try:
+            val + ''
+            with open(next_item, 'w') as item_fd:
+                item_fd.write(val)
+        except TypeError:
+            # Is not a string
+            _create_files(val, dir_name=next_item)
+
 
 class TestConnection(unittest.TestCase):
     def setUp(self):
+        if not os.path.exists(LOCAL_DAV_DIR):
+            os.mkdir(LOCAL_DAV_DIR)
+
+        _create_files(DIR_STRUCTURE)
+
+        # Start pywebdav server
+        self.server_proc = subprocess.Popen(SERVER_CMD, shell=True)
+        time.sleep(0.5)
+
         settings = dict(username='wibble',
                         password='fish',
                         realm='test-realm',
@@ -30,7 +62,13 @@ class TestConnection(unittest.TestCase):
         self.connection_obj = python_webdav.connection.Connection(settings)
 
     def tearDown(self):
-        pass
+        # Stop the server
+        print "Stopping server"
+        result = self.server_proc.kill()
+        print result
+
+        # Delete the directory structure
+        shutil.rmtree(os.path.join(LOCAL_DAV_DIR, DAV_ROOT_DIR))
 
     def test_connection_settings(self):
         self.assertEquals(self.connection_obj.username, 'wibble')
@@ -46,7 +84,7 @@ class TestConnection(unittest.TestCase):
                                    requests.Session))
 
     def test_send_request(self):
-        self.connection_obj.host = 'http://localhost/webdav'
+        self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
         resp, content = self.connection_obj._send_request('GET', '')
         self.assertEquals(resp.status_code, 200)
 
@@ -62,7 +100,7 @@ class TestConnection(unittest.TestCase):
                           self.connection_obj.send_get, path)
 
     def test_send_put(self):
-        self.connection_obj.host = 'http://localhost/webdav'
+        self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
         path = '/webdav/test_file_post.txt'
         test_file = os.path.join(os.path.dirname(__file__),
                                  'test_data', 'test_file_post.txt')
@@ -79,13 +117,13 @@ class TestConnection(unittest.TestCase):
                           self.connection_obj.send_put, path, body=body)
 
     def test_send_delete(self):
-        self.connection_obj.host = 'http://localhost/webdav'
+        self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
         path = '/webdav/test_file_post.txt'
         resp, content = self.connection_obj.send_delete(path)
         self.assertTrue(resp.status_code in [204])
 
     def test_send_delete_not_there(self):
-        self.connection_obj.host = 'http://localhost/webdav'
+        self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
         path = '/webdav/imnothere'
         resp, content = self.connection_obj.send_delete(path)
         self.assertEquals(resp.status_code, 404)
@@ -97,7 +135,7 @@ class TestConnection(unittest.TestCase):
                           self.connection_obj.send_delete, path)
 
     def test_send_propget_root(self):
-        self.connection_obj.host = 'http://localhost/webdav/'
+        self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
         path = ''
         resp, content = self.connection_obj.send_propfind(path)
 
@@ -109,7 +147,7 @@ class TestConnection(unittest.TestCase):
         self.assertEquals(expected_content, content_sample)
 
     def test_send_propget_file(self):
-        self.connection_obj.host = 'http://localhost/webdav/test_file1.txt'
+        self.connection_obj.host = 'http://localhost:%d/webdav/test_file1.txt' % PORT
         path = ''
         resp, content = self.connection_obj.send_propfind(path)
 
@@ -121,7 +159,7 @@ class TestConnection(unittest.TestCase):
         self.assertEquals(expected_content, content_sample)
 
     def test_send_propget_path(self):
-        self.connection_obj.host = 'http://localhost/webdav/'
+        self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
         path = 'test_dir1/'
         resp, content = self.connection_obj.send_propfind(path)
 
@@ -139,7 +177,7 @@ class TestConnection(unittest.TestCase):
                           self.connection_obj.send_propfind, path)
 
     def test_send_lock(self):
-        self.connection_obj.host = 'http://localhost/webdav/'
+        self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
         path = 'test_file1.txt'
         resp, content, lock = self.connection_obj.send_lock(path)
         lock_fd = open('tst_lock.txt', 'w')
@@ -149,7 +187,7 @@ class TestConnection(unittest.TestCase):
         self.assertTrue(lock.token)
 
     def test_send_unlock(self):
-        self.connection_obj.host = 'http://localhost/webdav/test_file1.txt'
+        self.connection_obj.host = 'http://localhost:%d/webdav/test_file1.txt' % PORT
         path = ''
         lock_file = os.path.join(os.path.dirname(__file__), 'test_data',
                                  'tst_lock.txt')
@@ -162,19 +200,19 @@ class TestConnection(unittest.TestCase):
         self.assertEquals(204, resp.status_code)
 
     def test_send_mkcol(self):
-        self.connection_obj.host = 'http://localhost/webdav/'
+        self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
         path = 'wibble/'
         resp, content = self.connection_obj.send_mkcol(path)
         self.assertEquals(201, resp.status_code)
 
     def test_send_rmcol(self):
-        self.connection_obj.host = 'http://localhost/webdav/'
+        self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
         path = 'wibble/'
         resp, content = self.connection_obj.send_rmcol(path)
         self.assertEquals(204, resp.status_code)
 
     def test_send_copy_same_dir(self):
-        self.connection_obj.host = 'http://localhost/webdav'
+        self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
         path = 'webdav/test_file1.txt'
         destination = 'webdav/temp_file_copy.txt'
         resp, content = self.connection_obj.send_copy(path, destination)
@@ -193,7 +231,25 @@ class TestProperty(unittest.TestCase):
 
 class TestClient(unittest.TestCase):
     def setUp(self):
+        if not os.path.exists(LOCAL_DAV_DIR):
+            os.mkdir(LOCAL_DAV_DIR)
+
+        _create_files(DIR_STRUCTURE)
+
+        # Start pywebdav server
+        self.server_proc = subprocess.Popen(SERVER_CMD, shell=True)
+        time.sleep(0.5)
+
         self.client_obj = python_webdav.connection.Client()
+
+    def tearDown(self):
+        # Stop the server
+        print "Stopping server"
+        result = self.server_proc.kill()
+        print result
+
+        # Delete the directory structure
+        shutil.rmtree(os.path.join(LOCAL_DAV_DIR, DAV_ROOT_DIR))
 
     def test_parse_xml_prop(self):
         xml = '''<?xml version="1.0" encoding="utf-8"?>
@@ -318,7 +374,7 @@ class TestClient(unittest.TestCase):
                         password='fish',
                         realm='test-realm',
                         port=PORT,
-                        host='http://localhost/webdav',
+                        host='http://localhost:%d/webdav' % PORT,
                         path='webdav')
         connection_obj = python_webdav.connection.Connection(settings)
 
@@ -350,7 +406,7 @@ class TestClient(unittest.TestCase):
                         password='fish',
                         realm='test-realm',
                         port=PORT,
-                        host='http://localhost/webdav',
+                        host='http://localhost:%d/webdav' % PORT,
                         path='webdav')
         connection_obj = python_webdav.connection.Connection(settings)
         client = python_webdav.connection.Client()
@@ -369,7 +425,7 @@ class TestClient(unittest.TestCase):
                         password='fish',
                         realm='test-realm',
                         port=PORT,
-                        host='http://localhost/webdav',
+                        host='http://localhost:%d/webdav' % PORT,
                         path='webdav')
         connection_obj = python_webdav.connection.Connection(settings)
 
@@ -394,7 +450,7 @@ class TestClient(unittest.TestCase):
                         password='fish',
                         realm='test-realm',
                         port=PORT,
-                        host='http://localhost/webdav',
+                        host='http://localhost:%d/webdav' % PORT,
                         path='webdav')
         connection_obj = python_webdav.connection.Connection(settings)
         connection_obj.send_put = mock.Mock()
@@ -414,7 +470,7 @@ class TestClient(unittest.TestCase):
                         password='fish',
                         realm='test-realm',
                         port=PORT,
-                        host='http://localhost/webdav',
+                        host='http://localhost:%d/webdav' % PORT,
                         path='webdav')
         connection_obj = python_webdav.connection.Connection(settings)
         connection_obj.send_copy = mock.Mock()
@@ -433,7 +489,7 @@ class TestClient(unittest.TestCase):
                         password='fish',
                         realm='test-realm',
                         port=PORT,
-                        host='http://localhost/webdav',
+                        host='http://localhost:%d/webdav' % PORT,
                         path='webdav')
         connection_obj = python_webdav.connection.Connection(settings)
         connection_obj.send_delete = mock.Mock()
@@ -450,7 +506,7 @@ class TestClient(unittest.TestCase):
                         password='fish',
                         realm='test-realm',
                         port=PORT,
-                        host='http://localhost/webdav',
+                        host='http://localhost:%d/webdav' % PORT,
                         path='webdav')
         connection_obj = python_webdav.connection.Connection(settings)
         connection_obj.send_lock = mock.Mock()
@@ -481,7 +537,7 @@ class TestClient(unittest.TestCase):
                         password='fish',
                         realm='test-realm',
                         port=PORT,
-                        host='http://localhost/webdav',
+                        host='http://localhost:%d/webdav' % PORT,
                         path='webdav')
         connection_obj = python_webdav.connection.Connection(settings)
         connection_obj.send_unlock = mock.Mock()
@@ -515,7 +571,7 @@ class TestClient(unittest.TestCase):
                         password='fish',
                         realm='test-realm',
                         port=PORT,
-                        host='http://localhost/webdav',
+                        host='http://localhost:%d/webdav' % PORT,
                         path='webdav')
         connection_obj = python_webdav.connection.Connection(settings)
         connection_obj.send_unlock = mock.Mock()
