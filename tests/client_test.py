@@ -3,6 +3,7 @@ import os
 import re
 import mock
 from datetime import datetime
+
 import python_webdav.client as webdav_client
 
 class TestClient(unittest.TestCase):
@@ -11,7 +12,7 @@ class TestClient(unittest.TestCase):
     def setUp(self):
         """ setUp
         """
-        self.client = webdav_client.Client('http://localhost/webdav',
+        self.client = webdav_client.Client('http://localhost:8008/webdav',
                                            webdav_path = '.',
                                            realm = 'test-realm',
                                            port = 80)
@@ -73,17 +74,17 @@ class TestClient(unittest.TestCase):
 
     def test_ls(self):
         self.client.connection.path = 'webdav'
-        self.client.connection.host = 'http://localhost/'
+        self.client.connection.host = 'http://localhost:8008/'
 
         result = sorted(self.client.ls())
 
         expected_result = sorted([
-            ['/webdav/', 'httpd/unix-directory'],
-            ['/webdav/newpath/', 'httpd/unix-directory'],
-            ['/webdav/test_dir1/', 'httpd/unix-directory'],
-            ['/webdav/test_file1.txt', 'text/plain'],
-            ['/webdav/test_file2.txt', 'text/plain'],
-            ['/webdav/test_file_post.txt', 'text/plain']])
+            ['http://localhost:8008/webdav', 'httpd/unix-directory'],
+            ['http://localhost:8008/webdav/newpath', 'httpd/unix-directory'],
+            ['http://localhost:8008/webdav/test_dir1', 'httpd/unix-directory'],
+            ['http://localhost:8008/webdav/test_file1.txt', 'text/plain'],
+            ['http://localhost:8008/webdav/test_file2.txt', 'text/plain'],
+            ['http://localhost:8008/webdav/test_file_post.txt', 'text/plain']])
 
         self.assertEqual(result[0][0:2], expected_result[0])
         self.assertEqual(result[1][0:2], expected_result[1])
@@ -101,7 +102,7 @@ class TestClient(unittest.TestCase):
 
     def test_ls_formats(self):
         self.client.connection.path = 'webdav'
-        self.client.connection.host = 'http://localhost/'
+        self.client.connection.host = 'http://localhost:8008/'
 
         result = sorted(
             self.client.ls(list_format=('C', 'F', 'A', 'E', 'D', 'T', 'M')))
@@ -109,7 +110,7 @@ class TestClient(unittest.TestCase):
         etag_regex = re.compile(r'(?i)([a-f0-9\-]+)')
 
         self.assertTrue(result[0][0] in ['text/plain', 'httpd/unix-directory'])
-        self.assertTrue(result[0][1].startswith('/webdav/'))
+        self.assertTrue(result[0][1].startswith('http://localhost:8008/webdav'))
         self.assertTrue(result[0][2] in ['T', 'F', ''])
         self.assertTrue(etag_regex.match(result[0][3]))
         self.assertTrue(datetime.strptime(result[0][4], '%Y-%m-%dT%H:%M:%SZ'))

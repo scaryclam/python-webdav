@@ -1,7 +1,9 @@
 """ Connection Module
 """
-import httplib2
+#import httplib2
 import requests
+import urlparse
+
 import python_webdav.parse
 import python_webdav.file_wrapper as file_wrapper
 
@@ -51,7 +53,7 @@ class Connection(object):
         """
         if not headers:
             headers = {}
-        uri = httplib2.urlparse.urljoin(self.host, path)
+        uri = urlparse.urljoin(self.host, path)
         try:
             resp = self.httpcon.request(request_method, uri,
                                         data=body, headers=headers)
@@ -328,7 +330,8 @@ class Client(object):
             properties = parser.response_objects
             return properties
         else:
-            raise httplib2.HttpLib2Error([resp, prop_xml])
+            #raise httplib2.HttpLib2Error([resp, prop_xml])
+            raise requests.HTTPError([resp, prop_xml])
 
     def get_property(self, connection, resource_uri, property_name):
         """ Get a property object
