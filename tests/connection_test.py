@@ -331,7 +331,8 @@ class TestClient(unittest.TestCase):
 </D:multistatus>'''
         #properties = self.client_obj.parse_xml_prop(xml)
         import python_webdav.parse
-        parser = python_webdav.parse.LxmlParser()
+        #parser = python_webdav.parse.LxmlParser()
+        parser = python_webdav.parse.SoupParser()
         properties = parser.parse(xml)
         ##properties = parser.response_objects
         self.assertEquals(len(properties), 3)
