@@ -26,7 +26,11 @@ class TestClient(unittest.TestCase):
     def test_download_file(self):
         """ Download a simple file
         """
-        file_path = 'webdav/test_file1.txt'
+        file_path = 'test_file1.txt'
+        full_path = os.path.join('/tmp', file_path)
+        file_fd = open(full_path, 'w')
+        file_fd.write('Test file\n')
+        file_fd.close()
         dest_path = os.path.join(os.path.dirname(__file__), 'test_data')
         resp, content = self.client.download_file(file_path,
                                                   dest_path=dest_path)

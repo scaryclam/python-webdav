@@ -100,7 +100,7 @@ class TestConnection(unittest.TestCase):
 
     def test_send_put(self):
         self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
-        path = '/webdav/test_file_post.txt'
+        path = '/test_file_post.txt'
         test_file = os.path.join(os.path.dirname(__file__),
                                  'test_data', 'test_file_post.txt')
         file_to_send = open(test_file, 'r')
@@ -117,7 +117,7 @@ class TestConnection(unittest.TestCase):
 
     def test_send_delete(self):
         self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
-        path = '/webdav/test_file_post.txt'
+        path = '/test_file_post.txt'
         dir_path = os.path.join('/tmp', 'webdav', 'test_file_post.txt')
         if not os.path.exists(dir_path):
             open(dir_path, 'w').close()
@@ -126,7 +126,7 @@ class TestConnection(unittest.TestCase):
 
     def test_send_delete_not_there(self):
         self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
-        path = '/webdav/imnothere'
+        path = '/imnothere'
         resp, content = self.connection_obj.send_delete(path)
         self.assertEquals(resp.status_code, 404)
 
@@ -142,11 +142,11 @@ class TestConnection(unittest.TestCase):
         resp, content = self.connection_obj.send_propfind(path)
 
         expected_resp_status = 207
-        expected_content = '<?xml version="1.0" encoding="utf-8"?>\n<D:multistatus xmlns:D="DAV:">'
+        expected_content = '<?xml version="1.0" encoding="utf-8"?><D:multistatus xmlns:D="DAV:">'
         content_sample = '\n'.join(content.split('\n')[:2])
 
         self.assertEquals(expected_resp_status, resp.status_code)
-        self.assertEquals(expected_content, content_sample)
+        self.assertTrue(content_sample.startswith(expected_content))
 
     def test_send_propget_file(self):
         self.connection_obj.host = 'http://localhost:%d/webdav/test_file1.txt' % PORT
@@ -154,11 +154,11 @@ class TestConnection(unittest.TestCase):
         resp, content = self.connection_obj.send_propfind(path)
 
         expected_resp_status = 207
-        expected_content = '<?xml version="1.0" encoding="utf-8"?>\n<D:multistatus xmlns:D="DAV:">'
+        expected_content = '<?xml version="1.0" encoding="utf-8"?><D:multistatus xmlns:D="DAV:">'
         content_sample = '\n'.join(content.split('\n')[:2])
 
         self.assertEquals(expected_resp_status, resp.status_code)
-        self.assertEquals(expected_content, content_sample)
+        self.assertTrue(content_sample.startswith(expected_content))
 
     def test_send_propget_path(self):
         self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
@@ -169,11 +169,11 @@ class TestConnection(unittest.TestCase):
         resp, content = self.connection_obj.send_propfind(path)
 
         expected_resp_status = 207
-        expected_content = '<?xml version="1.0" encoding="utf-8"?>\n<D:multistatus xmlns:D="DAV:">'
+        expected_content = '<?xml version="1.0" encoding="utf-8"?><D:multistatus xmlns:D="DAV:">'
         content_sample = '\n'.join(content.split('\n')[:2])
 
         self.assertEquals(expected_resp_status, resp.status_code)
-        self.assertEquals(expected_content, content_sample)
+        self.assertTrue(content_sample.startswith(expected_content))
 
     def test_send_propget_raises_error(self):
         self.connection_obj.host = 'http://nothereabsbdbabsbdabbabsdbashsjh.com'

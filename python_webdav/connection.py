@@ -58,8 +58,8 @@ class Connection(object):
                                         data=body, headers=headers)
         except requests.ConnectionError:
             raise
-        content = resp.content
-        return resp, content
+
+        return resp, resp.content
 
     def send_delete(self, path):
         """ Send a DELETE request
@@ -70,7 +70,7 @@ class Connection(object):
         """
         try:
             resp, content = self._send_request('DELETE', path)
-            return resp, content
+            return resp, resp.content
         except requests.ConnectionError:
             raise
 
@@ -174,7 +174,7 @@ class Connection(object):
             resp, content = self._send_request('LOCK', path, body=body)
             lock_token = LockToken(resp['lock-token'])
             return resp, content, lock_token
-        except requests.ConnectionError:
+        except requests.exceptions.ConnectionError:
             raise
 
     def send_unlock(self, path, lock_token):
