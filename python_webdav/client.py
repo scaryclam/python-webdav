@@ -68,8 +68,8 @@ while this top level module will hopefully aid in quicker development.
             :type dest_path: String
 
         """
-        resource_path = urllib2.urlparse.urljoin(self.connection.path,
-                                                 file_path.strip('/'))
+        resource_path = "%s/%s" % (
+            self.connection.path.rstrip('/'), file_path.lstrip('/'))
         resp, content = self.connection.send_get(resource_path)
         file_name = os.path.basename(file_path)
         write_to_path = os.path.join(dest_path, file_name)

@@ -1,11 +1,10 @@
 """ Connection Module
 """
-#import httplib2
 import requests
-import urlparse
 
 import python_webdav.parse
 import python_webdav.file_wrapper as file_wrapper
+
 
 class Connection(object):
     """ Connection object
@@ -53,7 +52,7 @@ class Connection(object):
         """
         if not headers:
             headers = {}
-        uri = urlparse.urljoin(self.host, path)
+        uri = "%s/%s" % (self.host.rstrip('/'), path.lstrip('/'))
         try:
             resp = self.httpcon.request(request_method, uri,
                                         data=body, headers=headers)
@@ -169,7 +168,8 @@ class Connection(object):
             body = '<?xml version="1.0" encoding="utf-8" ?>'
             body += '<D:lockinfo xmlns:D="DAV:"><D:lockscope><D:exclusive/>'
             body += '</D:lockscope><D:locktype><D:write/></D:locktype><D:owner>'
-            body += '<D:href>%s</D:href>' % urlparse.urljoin(self.host, path)
+            body += '<D:href>%s</D:href>' % "%s/%s" % (
+                self.host.rstrip('/'), path.lstrip('/'))
             body += '</D:owner></D:lockinfo>'
             resp, content = self._send_request('LOCK', path, body=body)
             lock_token = LockToken(resp['lock-token'])
@@ -193,8 +193,8 @@ class Connection(object):
             body = '<?xml version="1.0" encoding="utf-8" ?>'
             body += '<D:lockinfo xmlns:D="DAV:"><D:lockscope><D:exclusive/>'
             body += '</D:lockscope><D:locktype><D:write/></D:locktype><D:owner>'
-            body += '<D:href>%s</D:href>' % urlparse.urljoin(
-                self.host, path)
+            body += '<D:href>%s</D:href>' % "%s/%s" % (
+                self.host.rstrip('/'), path.lstrip('/'))
             body += '</D:owner></D:lockinfo>'
             resp, content = self._send_request('UNLOCK', path, headers=headers,
                                                body=body)
@@ -242,7 +242,8 @@ class Connection(object):
 
         """
         try:
-            full_destination = httplib2.urlparse.urljoin(self.host, destination)
+            full_destination = "%s/%s" % (self.host.rstrip('/'),
+                                          destination.lstrip('/'))
             headers = {'Destination': full_destination}
             resp, content = self._send_request('COPY', path, headers=headers)
             return resp, content

@@ -78,8 +78,7 @@ class TestConnection(unittest.TestCase):
         self.assertEquals(self.connection_obj.host,
                           'http://webdav.example.com/webdav')
         self.assertEquals(self.connection_obj.path, '.')
-        self.assertEquals(self.connection_obj.httpcon.credentials.credentials,
-                          [('', 'wibble', 'fish')])
+        self.assertEquals(self.connection_obj.httpcon.auth, ('wibble', 'fish',))
         self.assertTrue(isinstance(self.connection_obj.httpcon,
                                    requests.Session))
 
@@ -89,7 +88,7 @@ class TestConnection(unittest.TestCase):
         self.assertEquals(resp.status_code, 200)
 
     def test_send_get(self):
-        self.connection_obj.host = 'http://localhost/webdav'
+        self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
         path = ''
         resp, content = self.connection_obj.send_get(path)
         self.assertEquals(resp.status_code, 200)
@@ -119,6 +118,9 @@ class TestConnection(unittest.TestCase):
     def test_send_delete(self):
         self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
         path = '/webdav/test_file_post.txt'
+        dir_path = os.path.join('/tmp', 'webdav', 'test_file_post.txt')
+        if not os.path.exists(dir_path):
+            open(dir_path, 'w').close()
         resp, content = self.connection_obj.send_delete(path)
         self.assertTrue(resp.status_code in [204])
 
@@ -161,6 +163,9 @@ class TestConnection(unittest.TestCase):
     def test_send_propget_path(self):
         self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
         path = 'test_dir1/'
+        dir_path = os.path.join('/tmp', 'webdav', 'test_dir1')
+        if not os.path.exists(dir_path):
+            os.mkdir(dir_path)
         resp, content = self.connection_obj.send_propfind(path)
 
         expected_resp_status = 207
@@ -206,6 +211,9 @@ class TestConnection(unittest.TestCase):
         self.assertEquals(201, resp.status_code)
 
     def test_send_rmcol(self):
+        dir_path = os.path.join('/tmp', 'webdav', 'wibble')
+        if not os.path.exists(dir_path):
+            os.mkdir(dir_path)
         self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
         path = 'wibble/'
         resp, content = self.connection_obj.send_rmcol(path)
@@ -217,7 +225,7 @@ class TestConnection(unittest.TestCase):
         destination = 'webdav/temp_file_copy.txt'
         resp, content = self.connection_obj.send_copy(path, destination)
         self.connection_obj.send_delete(destination)
-        self.assertEquals(201, resp.status_code)
+        self.assertTrue(resp.status_code in [201, 204])
 
 
 class TestProperty(unittest.TestCase):
