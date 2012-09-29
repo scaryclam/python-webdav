@@ -163,10 +163,10 @@ class SoupParser(object):
             for lock in lock_tree:
                 lock_obj = Lock()
                 lock_obj.locktype = lock.find(
-                    re.compile(r'locktype')).findChild()[-1]
-                #lock_obj.lockscope = lock_tree.find(
-                    #'//lockscope').getchildren()[-1].tag
-                #new_response.locks.append(lock_obj)
+                    re.compile(r'locktype')).findChild().name
+                lock_obj.lockscope = lock_tree.find(
+                    re.compile(r'lockscope')).findChild().name
+                new_response.locks.append(lock_obj)
 
             self.response_objects.append(new_response)
 

@@ -19,7 +19,7 @@ import python_webdav.connection
 # Some WebDAV server settings.
 LOCAL_DAV_DIR = "/tmp/"
 DAV_ROOT_DIR = "webdav"
-PORT = 8080
+PORT = 8008
 SERVER_CMD = "~/code/virtual/python-webdav/bin/davserver -D %s -n -P %d" % (LOCAL_DAV_DIR, PORT)
 
 DIR_STRUCTURE = {DAV_ROOT_DIR: {'test_file1.txt': 'Test file',

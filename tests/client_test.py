@@ -13,9 +13,9 @@ class TestClient(unittest.TestCase):
         """ setUp
         """
         self.client = webdav_client.Client('http://localhost:8008/webdav',
-                                           webdav_path = '.',
-                                           realm = 'test-realm',
-                                           port = 80)
+                                           webdav_path='.',
+                                           realm='test-realm',
+                                           port=80)
         self.client.set_connection(username='wibble', password='fish')
 
     def tearDown(self):
@@ -34,7 +34,7 @@ class TestClient(unittest.TestCase):
         self.assertTrue(os.path.exists(written_file))
         file_fd = open(written_file, 'r')
         data = file_fd.read()
-        file_fd.close
+        file_fd.close()
         os.remove(written_file)
         self.assertEqual(data, 'Test file\n')
 
@@ -72,19 +72,38 @@ class TestClient(unittest.TestCase):
         self.client.chdir('/foo/bar')
         self.assertEqual(self.client.connection.path, '/foo/bar')
 
+    def _create_paths(self, paths):
+        for path in paths:
+            full_path = os.path.join('/tmp', path)
+            if not os.path.exists(full_path):
+                if path.endswith('.txt'):
+                    open(full_path, 'w').close()
+                else:
+                    os.mkdir(full_path)
+
     def test_ls(self):
+        host = 'http://localhost:8008/'
+        path1 = 'webdav'
+        path2 = 'webdav/newpath'
+        path3 = 'webdav/test_dir1'
+        path4 = 'webdav/test_file1.txt'
+        path5 = 'webdav/test_file2.txt'
+        path6 = 'webdav/test_file_post.txt'
+        paths = [path1, path2, path3, path4, path5, path6]
+        self._create_paths(paths)
+
         self.client.connection.path = 'webdav'
-        self.client.connection.host = 'http://localhost:8008/'
+        self.client.connection.host = host
 
         result = sorted(self.client.ls())
 
         expected_result = sorted([
-            ['http://localhost:8008/webdav', 'httpd/unix-directory'],
-            ['http://localhost:8008/webdav/newpath', 'httpd/unix-directory'],
-            ['http://localhost:8008/webdav/test_dir1', 'httpd/unix-directory'],
-            ['http://localhost:8008/webdav/test_file1.txt', 'text/plain'],
-            ['http://localhost:8008/webdav/test_file2.txt', 'text/plain'],
-            ['http://localhost:8008/webdav/test_file_post.txt', 'text/plain']])
+            [host + path1, 'httpd/unix-directory'],
+            [host + path2, 'httpd/unix-directory'],
+            [host + path3, 'httpd/unix-directory'],
+            [host + path4, 'text/plain'],
+            [host + path5, 'text/plain'],
+            [host + path6, 'text/plain']])
 
         self.assertEqual(result[0][0:2], expected_result[0])
         self.assertEqual(result[1][0:2], expected_result[1])
@@ -101,13 +120,23 @@ class TestClient(unittest.TestCase):
         self.assertTrue(result[5][-1])
 
     def test_ls_formats(self):
+        host = 'http://localhost:8008/'
+        path1 = 'webdav'
+        path2 = 'webdav/newpath'
+        path3 = 'webdav/test_dir1'
+        path4 = 'webdav/test_file1.txt'
+        path5 = 'webdav/test_file2.txt'
+        path6 = 'webdav/test_file_post.txt'
+        paths = [path1, path2, path3, path4, path5, path6]
+        self._create_paths(paths)
+
         self.client.connection.path = 'webdav'
         self.client.connection.host = 'http://localhost:8008/'
 
         result = sorted(
             self.client.ls(list_format=('C', 'F', 'A', 'E', 'D', 'T', 'M')))
 
-        etag_regex = re.compile(r'(?i)([a-f0-9\-]+)')
+        etag_regex = re.compile(r'(?i)([a-f0-9\-]*)')
 
         self.assertTrue(result[0][0] in ['text/plain', 'httpd/unix-directory'])
         self.assertTrue(result[0][1].startswith('http://localhost:8008/webdav'))
@@ -118,7 +147,7 @@ class TestClient(unittest.TestCase):
         self.assertTrue(datetime.strptime(result[0][6],
                                           '%a, %d %b %Y %H:%M:%S GMT'))
         self.assertTrue(result[1][0] in ['text/plain', 'httpd/unix-directory'])
-        self.assertTrue(result[1][1].startswith('/webdav/'))
+        self.assertTrue(result[1][1].startswith('http://localhost:8008/webdav'))
         self.assertTrue(result[1][2] in ['T', 'F', ''])
         self.assertTrue(etag_regex.match(result[1][3]))
         self.assertTrue(datetime.strptime(result[1][4], '%Y-%m-%dT%H:%M:%SZ'))
@@ -126,7 +155,7 @@ class TestClient(unittest.TestCase):
         self.assertTrue(datetime.strptime(result[1][6],
                                           '%a, %d %b %Y %H:%M:%S GMT'))
         self.assertTrue(result[2][0] in ['text/plain', 'httpd/unix-directory'])
-        self.assertTrue(result[2][1].startswith('/webdav/'))
+        self.assertTrue(result[2][1].startswith('http://localhost:8008/webdav/'))
         self.assertTrue(result[2][2] in ['T', 'F', ''])
         self.assertTrue(etag_regex.match(result[2][3]))
         self.assertTrue(datetime.strptime(result[2][4], '%Y-%m-%dT%H:%M:%SZ'))
@@ -134,7 +163,7 @@ class TestClient(unittest.TestCase):
         self.assertTrue(datetime.strptime(result[2][6],
                                           '%a, %d %b %Y %H:%M:%S GMT'))
         self.assertTrue(result[3][0] in ['text/plain', 'httpd/unix-directory'])
-        self.assertTrue(result[3][1].startswith('/webdav/'))
+        self.assertTrue(result[3][1].startswith('http://localhost:8008/webdav/'))
         self.assertTrue(result[3][2] in ['T', 'F', ''])
         self.assertTrue(etag_regex.match(result[3][3]))
         self.assertTrue(datetime.strptime(result[3][4], '%Y-%m-%dT%H:%M:%SZ'))
@@ -142,7 +171,7 @@ class TestClient(unittest.TestCase):
         self.assertTrue(datetime.strptime(result[3][6],
                                           '%a, %d %b %Y %H:%M:%S GMT'))
         self.assertTrue(result[4][0] in ['text/plain', 'httpd/unix-directory'])
-        self.assertTrue(result[4][1].startswith('/webdav/'))
+        self.assertTrue(result[4][1].startswith('http://localhost:8008/webdav/'))
         self.assertTrue(result[4][2] in ['T', 'F', ''])
         self.assertTrue(etag_regex.match(result[4][3]))
         self.assertTrue(datetime.strptime(result[4][4], '%Y-%m-%dT%H:%M:%SZ'))
@@ -150,7 +179,7 @@ class TestClient(unittest.TestCase):
         self.assertTrue(datetime.strptime(result[4][6],
                                           '%a, %d %b %Y %H:%M:%S GMT'))
         self.assertTrue(result[5][0] in ['text/plain', 'httpd/unix-directory'])
-        self.assertTrue(result[5][1].startswith('/webdav/'))
+        self.assertTrue(result[5][1].startswith('http://localhost:8008/webdav/'))
         self.assertTrue(result[5][2] in ['T', 'F', ''])
         self.assertTrue(etag_regex.match(result[5][3]))
         self.assertTrue(datetime.strptime(result[5][4], '%Y-%m-%dT%H:%M:%SZ'))
@@ -160,7 +189,7 @@ class TestClient(unittest.TestCase):
 
     def test_ls_no_format(self):
         self.client.connection.path = 'webdav'
-        self.client.connection.host = 'http://localhost/'
+        self.client.connection.host = 'http://localhost:8008/'
 
         result = self.client.ls(list_format=tuple())
         self.assertEqual(result, [[], [], [], [], [], []])
