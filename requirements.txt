@@ -1,5 +1,4 @@
 requests==0.11.1
 mock
-lxml
-BeautifulSoup
+BeautifulSoup==3.2.1
 

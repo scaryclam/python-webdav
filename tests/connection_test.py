@@ -7,7 +7,6 @@
 """
 import unittest
 import os
-#import httplib2
 import socket
 import mock
 import requests

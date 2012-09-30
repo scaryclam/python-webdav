@@ -11,6 +11,9 @@ The parser has also been refactored to use BeautifulSoup in place of lxml.
 INSTALLATION
 ------------
 
+Stable Version
+''''''''''''''
+
 Install using:
 
   python setup.py install
@@ -18,6 +21,18 @@ Install using:
 or just install using pip:
 
   pip install python_webdav
+
+Development Versions
+''''''''''''''''''''
+
+Stable versions are not released with much regularity, so if you want features or fixes
+and don't want to wait, you can pip install via github instead.
+
+The master branch is usually pretty stable but is generally not fully tested. Because if this
+there could still be bugs lurking.
+
+The develop branch is a work in progress. Features and fixes get put there after they are reasonably complete
+but you should consider the branch to be unstable.
 
 
 CONTRIBUTING

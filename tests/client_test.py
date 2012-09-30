@@ -27,7 +27,9 @@ class TestClient(unittest.TestCase):
         """ Download a simple file
         """
         file_path = 'test_file1.txt'
-        full_path = os.path.join('/tmp', file_path)
+        full_path = os.path.join('/tmp', 'webdav', file_path)
+        if not os.path.exists(os.path.join('/tmp', 'webdav')):
+            os.mkdir('/tmp/webdav')
         file_fd = open(full_path, 'w')
         file_fd.write('Test file\n')
         file_fd.close()
