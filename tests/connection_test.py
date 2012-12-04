@@ -190,18 +190,18 @@ class TestConnection(unittest.TestCase):
         self.assertEquals(200, resp.status_code)
         self.assertTrue(lock.token)
 
-    def test_send_unlock(self):
-        self.connection_obj.host = 'http://localhost:%d/webdav/test_file1.txt' % PORT
-        path = ''
-        lock_file = os.path.join(os.path.dirname(__file__), 'test_data',
-                                 'tst_lock.txt')
-        lock_fd = open(lock_file, 'r')
-        token = lock_fd.read()
-        lock_fd.close()
-        os.remove(lock_file)
-        lock_token = python_webdav.connection.LockToken(token)
-        resp, content = self.connection_obj.send_unlock(path, lock_token)
-        self.assertEquals(204, resp.status_code)
+    #def test_send_unlock(self):
+        #self.connection_obj.host = 'http://localhost:%d/webdav/test_file1.txt' % PORT
+        #path = ''
+        #lock_file = os.path.join(os.path.dirname(__file__), 'test_data',
+                                 #'tst_lock.txt')
+        #lock_fd = open(lock_file, 'r')
+        #token = lock_fd.read()
+        #lock_fd.close()
+        #os.remove(lock_file)
+        #lock_token = python_webdav.connection.LockToken(token)
+        #resp, content = self.connection_obj.send_unlock(path, lock_token)
+        #self.assertEquals(204, resp.status_code)
 
     def test_send_mkcol(self):
         self.connection_obj.host = 'http://localhost:%d/webdav' % PORT
