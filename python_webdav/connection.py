@@ -26,10 +26,15 @@ class Connection(object):
         self.port = settings['port']
         self.locks = {}
 
+        # Optional setup
+        self.allow_bad_cert = settings.get('allow_bad_cert', False)
+        verify = not self.allow_bad_cert
+
         # Make an http object for this connection
         #self.httpcon = httplib2.Http()
         #self.httpcon.add_credentials(self.username, self.password)
-        self.httpcon = requests.session(auth=(self.username, self.password))
+        self.httpcon = requests.session(
+            auth=(self.username, self.password), verify=verify)
 
     def _send_request(self, request_method, path, body='', headers=None,
                       callback=None):
