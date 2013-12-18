@@ -14,7 +14,7 @@ class Client(object):
         that might be found in a CLI
     """
 
-    def __init__(self, webdav_server_uri, webdav_path='.', port=80, realm=''):
+    def __init__(self, webdav_server_uri, webdav_path='.', port=80, realm='', allow_bad_cert=False):
         """
 
 The Client module is not yet ready for use. The purpose of this module is to
@@ -24,7 +24,9 @@ while this top level module will hopefully aid in quicker development.
         """
         self._connection_settings = dict(host=webdav_server_uri,
                                          path=webdav_path,
-                                         port=port, realm=realm)
+                                         port=port,
+                                         realm=realm,
+                                         allow_bad_cert=allow_bad_cert)
         path = self._connection_settings['path']
         if path[-1] != '/' and path != '.':
             self._connection_settings['path'] += '/'
