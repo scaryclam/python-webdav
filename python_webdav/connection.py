@@ -440,7 +440,6 @@ class Client(object):
         resp, contents = connection.send_delete(resource_uri)
         return resp, contents
 
-# ------------------------- NOT YET IMPLIMENTED ----------------------------- #
     def get_lock(self, resource_uri, connection):
         """ Get a file lock
 
