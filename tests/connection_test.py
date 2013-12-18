@@ -42,15 +42,19 @@ def _create_files(dir_structure, dir_name=None):
 
 
 class TestConnection(unittest.TestCase):
+    running = False
     def setUp(self):
         if not os.path.exists(LOCAL_DAV_DIR):
             os.mkdir(LOCAL_DAV_DIR)
 
         _create_files(DIR_STRUCTURE)
 
-        # Start pywebdav server
-        self.server_proc = subprocess.Popen(SERVER_CMD, shell=True)
-        time.sleep(0.5)
+        # Start pywebdav server if it's not running already
+        if not self.running:
+            print "SERVER IS NOT RUNNING. STARTING NOW"
+            self.running = True
+            self.server_proc = subprocess.Popen(SERVER_CMD, shell=True)
+            time.sleep(0.5)
 
         settings = dict(username='wibble',
                         password='fish',
@@ -65,6 +69,7 @@ class TestConnection(unittest.TestCase):
         print "Stopping server"
         result = self.server_proc.kill()
         print result
+        self.running = False
 
         # Delete the directory structure
         shutil.rmtree(os.path.join(LOCAL_DAV_DIR, DAV_ROOT_DIR))

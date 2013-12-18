@@ -33,8 +33,9 @@ class Connection(object):
         # Make an http object for this connection
         #self.httpcon = httplib2.Http()
         #self.httpcon.add_credentials(self.username, self.password)
-        self.httpcon = requests.session(
-            auth=(self.username, self.password), verify=verify)
+        self.httpcon = requests.session()
+        self.httpcon.auth = (self.username, self.password)
+        self.httpcon.verify = verify
 
     def _send_request(self, request_method, path, body='', headers=None,
                       callback=None):
